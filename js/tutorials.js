@@ -166,7 +166,7 @@ $(function() {
             $('#output').text((JSON.stringify(this.data.tutorials)));
           }
         , 'update': function(e, info) {
-            if(info.step && ('noteMarked' in info.step)) {
+            if(info && info.step && ('noteMarked' in info.step)) {
               var that = this;
               marked(info.step.noteMarked, {}, function(err, html){
                 err || that.set('step.note', html);

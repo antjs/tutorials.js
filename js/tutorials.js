@@ -1,6 +1,7 @@
 
 $(function() {
-    var htmlCm, jsCm, consoleCm;
+    var htmlCm, jsCm, consoleCm
+      , router = Ant.router;
     
     var TuTor = Ant.extend({
       //运行示例代码
@@ -49,7 +50,7 @@ $(function() {
         }
         this.set({
           'step': step
-        , stepIndex: index + 1
+        , stepIndex: index*1 + 1
         , hasFixCode: !step.fixCode
         });
         htmlCm.setValue($('#template').val());
@@ -57,17 +58,10 @@ $(function() {
         consoleCm.setValue($('#console').val())
         step.autorun && this.run();
       }
-    , setChapter: function(title, stepIndex) {
+    , setChapter: function(index, stepIndex) {
         var index, chapter, tutorials = this.data.tutorials;
-        if(typeof title === 'number'){
-          index = title;
-        }else{
-          tutorials.forEach(function(chapter, i) {
-            if(chapter.title === title){
-              index = i;
-            }
-          });
-          index = index || 0;
+        if(isNaN(index * 1)){
+          return;
         }
         chapter = tutorials[index];
         
@@ -76,17 +70,21 @@ $(function() {
           tutorials.push(chapter);
         }
         
-        this.set({'chapter': chapter, chapterIndex: index + 1});
+        this.set({'chapter': chapter, chapterIndex: index * 1 + 1});
 
-        if(stepIndex){
+        if(stepIndex * 1){
           this.setStep(stepIndex);
         }else{
           this.setStep(0);
         }
       }
+    , navigate: function(hash) {
+        router.navigate(hash + (this.data.writeMode ? '?write=true' : ''));
+      }
     });
     
     !window.notSupport && $.ajax('data.json', {dataType: 'json'}).done(function(data){
+      $('#loading').fadeOut();
       
       var tutorials = JSON.parse(localStorage.getItem('tutorials') || JSON.stringify(data) || '[{"steps":[{}]}]');
     
@@ -109,24 +107,28 @@ $(function() {
         , 'click button': executeHandler
         , 'click #prev-step': function() {
             if(this.data.stepIndex > 1){
-              this.setStep(this.data.stepIndex - 2);
+              //this.setStep(this.data.stepIndex - 2);
+              this.navigate(this.data.chapterIndex + '/' + (this.data.stepIndex - 1))
             }
           }
         , 'click .next-step': function() {
             if(this.data.stepIndex < this.get('chapter.steps').length || this.data.writeMode){
-              this.setStep(this.data.stepIndex);
+              //this.setStep(this.data.stepIndex);
+              this.navigate(this.data.chapterIndex + '/' + (this.data.stepIndex + 1));
             }else{
               $(this.el).find('#next-chapter').trigger('click');
             }
           }
         , 'click #prev-chapter': function() {
             if(this.data.chapterIndex > 1){
-              this.setChapter(this.data.chapterIndex - 2);
+              //this.setChapter(this.data.chapterIndex - 2);
+              this.navigate(this.data.chapterIndex - 1);
             }
           }
         , 'click #next-chapter': function() {
             if(this.data.chapterIndex < this.get('tutorials').length || this.data.writeMode){
-              this.setChapter(this.data.chapterIndex);
+              //this.setChapter(this.data.chapterIndex);
+              this.navigate(this.data.chapterIndex + 1);
             }
           }
         , 'click .fixcode': function(e){
@@ -134,7 +136,6 @@ $(function() {
                this.data.step.fixCode.html && htmlCm.setValue(this.data.step.fixCode.html);
                this.data.step.fixCode.javascript && jsCm.setValue(this.data.step.fixCode.javascript);
                this.data.step.fixCode.console && consoleCm.setValue(this.data.step.fixCode.console);
-               this.run();
             }
           }
         , 'click #reset': function(e){
@@ -176,9 +177,16 @@ $(function() {
         }
       });
       
-      Ant.router.start({
+      router.start({
         '*': function(info) {
           tutor.set('writeMode', info.searchObj && info.searchObj.write === 'true');
+        }
+      , ':chapter/:step?': function(info) {
+          var params = info.params
+            , chapter = params.chapter - 1
+            , step = (params.step ? params.step : 1) - 1
+            ;
+          tutor.setChapter(chapter, step);
         }
       });
     });

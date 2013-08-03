@@ -2,7 +2,7 @@
 $(function() {
     var htmlCm, jsCm, consoleCm
       , router = Ant.router;
-    
+      
     var TuTor = Ant.extend({
       //运行示例代码
       run: function() {
@@ -100,6 +100,7 @@ $(function() {
             }
           }
       
+      TuTor.setPrefix('z-');
       var tutor = new TuTor($('.container')[0], {
         data: {tutorials:tutorials, writeMode: false}
       , events: {

@@ -1,7 +1,9 @@
 
 $(function() {
     var htmlCm, jsCm, consoleCm
-      , router = Ant.router;
+      , router = Ant.router
+      , tutor
+      ;
       
     var TuTor = Ant.extend({
       //运行示例代码
@@ -57,6 +59,7 @@ $(function() {
         jsCm.setValue($('#javascript').val())
         consoleCm.setValue($('#console').val())
         step.autorun && this.run();
+        setTimeout(function(){ step.init && eval(step.init); }, 0);
       }
     , setChapter: function(index, stepIndex) {
         var index, chapter, tutorials = this.data.tutorials;
@@ -98,10 +101,10 @@ $(function() {
                 that.runConsole();
               }
             }
-          }
+          };
       
       TuTor.setPrefix('z-');
-      var tutor = new TuTor($('.container')[0], {
+      tutor = new TuTor($('.container')[0], {
         data: {tutorials:tutorials, writeMode: false}
       , events: {
           'keypress textarea': executeHandler

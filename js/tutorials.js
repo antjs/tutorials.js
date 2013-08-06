@@ -51,9 +51,9 @@ $(function() {
           step = {};
           steps.push(step);
         }
+        this.set('step', step);
         this.set({
-          'step': step
-        , stepIndex: index + 1
+          stepIndex: index + 1
         , hasFixCode: !step.fixCode
         , hasPrevStep: index
         , hasNextStep: index < this.data.chapter.steps.length - 1 || this.data.hasNextChapter || this.data.writeMode
@@ -76,10 +76,9 @@ $(function() {
           chapter = {steps: []};
           tutorials.push(chapter);
         }
-        
+        this.set('chapter', chapter);
         this.set({
-          'chapter': chapter
-        , chapterIndex: index + 1
+          chapterIndex: index + 1
         , hasPrevChapter: index
         , hasNextChapter: index < this.data.tutorials.length - 1 || this.data.writeMode
         });

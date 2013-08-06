@@ -46,14 +46,17 @@ $(function() {
     , setStep: function(index) {
         var steps = this.get('chapter').steps;
         var step = steps[index];
+        index = index * 1;
         if((!step) && this.data.writeMode){
           step = {};
           steps.push(step);
         }
         this.set({
           'step': step
-        , stepIndex: index*1 + 1
+        , stepIndex: index + 1
         , hasFixCode: !step.fixCode
+        , hasPrevStep: index
+        , hasNextStep: index < this.data.chapter.steps.length - 1 || this.data.hasNextChapter || this.data.writeMode
         });
         htmlCm.setValue($('#template').val());
         jsCm.setValue($('#javascript').val())
@@ -62,8 +65,9 @@ $(function() {
         setTimeout(function(){ step.init && eval(step.init); }, 0);
       }
     , setChapter: function(index, stepIndex) {
-        var index, chapter, tutorials = this.data.tutorials;
-        if(isNaN(index * 1)){
+        var chapter, tutorials = this.data.tutorials;
+        index = index * 1;
+        if(isNaN(index)){
           return;
         }
         chapter = tutorials[index];
@@ -73,7 +77,12 @@ $(function() {
           tutorials.push(chapter);
         }
         
-        this.set({'chapter': chapter, chapterIndex: index * 1 + 1});
+        this.set({
+          'chapter': chapter
+        , chapterIndex: index + 1
+        , hasPrevChapter: index
+        , hasNextChapter: index < this.data.tutorials.length - 1 || this.data.writeMode
+        });
 
         if(stepIndex * 1){
           this.setStep(stepIndex);

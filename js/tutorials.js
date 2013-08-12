@@ -165,14 +165,14 @@ $(function() {
               , console = consoleCm.getValue()
               ;
             
-            html && ((this.get('isFixHTML') ? step.fixCode : step).html = html);
-            js && ((this.get('isFixJavascript') ? step.fixCode : step).javascript = js);
-            console && ((this.get('isFixConsole') ? step.fixCode : step).console = console);
+            (this.get('isFixHTML') ? step.fixCode : step).html = html || undefined;
+            (this.get('isFixJavascript') ? step.fixCode : step).javascript = js || undefined;
+            (this.get('isFixConsole') ? step.fixCode : step).console = console || undefined;
             
             if(!this.data.isFixHTML && !this.data.isFixJavascript && !this.data.isFixConsole){
               delete step.fixCode;
             }
-            this.set('step', step);
+            this.set({'step': step});
             localStorage.setItem('tutorials', JSON.stringify(this.data.tutorials))
           }
         , 'click #show': function() {
@@ -201,5 +201,11 @@ $(function() {
           tutor.setChapter(chapter, step);
         }
       });
+    });
+    
+    marked.setOptions({
+      highlight: function (code, lang) {
+        return hljs.highlightAuto(code, lang).value;
+      }
     });
 });

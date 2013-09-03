@@ -111,7 +111,6 @@ $(function() {
             }
           };
       
-      TuTor.setPrefix('z-');
       tutor = new TuTor($('.container')[0], {
         data: {tutorials:tutorials, writeMode: false}
       , events: {
@@ -172,7 +171,7 @@ $(function() {
             if(!this.data.isFixHTML && !this.data.isFixJavascript && !this.data.isFixConsole){
               delete step.fixCode;
             }
-            this.set({'step': step});
+            this.data.tutorials[this.data.chapterIndex - 1].steps.splice(this.data.stepIndex - 1, 1, step);
             localStorage.setItem('tutorials', JSON.stringify(this.data.tutorials))
           }
         , 'click #show': function() {

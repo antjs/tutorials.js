@@ -53,8 +53,6 @@ $(function() {
         this.set('step', step);
         this.set({
           stepIndex: index + 1
-        , hasFixCode: !step.fixCode
-        , hasPrevStep: index
         , hasNextStep: index < this.data.chapter.steps.length - 1 || this.data.hasNextChapter || this.data.writeMode
         });
         htmlCm.setValue($('#template').val());
@@ -78,7 +76,6 @@ $(function() {
         this.set('chapter', chapter);
         this.set({
           chapterIndex: index + 1
-        , hasPrevChapter: index
         , hasNextChapter: index < this.data.tutorials.length - 1 || this.data.writeMode
         });
 

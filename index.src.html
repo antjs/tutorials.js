@@ -35,11 +35,11 @@
 </head>
 <body>
   <div id="loading"><h3>教程加载中<blink>....</blink></h3></div>
-  <div class="container {{writeMode && 'write-mode'}}">
+  <div class="container {{writeMode ? 'write-mode' : ''}}">
     <div class=header>
       <h1>Tutorials.js 使用教程</h1>
       <ul class="pager">
-        <li id='prev-chapter' title='上一章' class='{{hasPrevChapter||"disabled"}}'><a href="javascript:;">&lt;</a></li>
+        <li id='prev-chapter' title='上一章' class='{{chapterIndex > 0 ? '': "disabled"}}'><a href="javascript:;">&lt;</a></li>
         <li>{{chapterIndex}} / {{tutorials.length}}</li>
         <li id='next-chapter' title='下一章' class='{{hasNextChapter||"disabled"}}'><a href="javascript:;">&gt;</a></li>
       </ul>
@@ -53,14 +53,14 @@
         <div class='panel board'>
           <div class=panel-heading>
             <ul class="pager">
-              <li id='prev-step' title='上一节' class='{{hasPrevStep||"disabled"}}'><a href="javascript:;">&lt;</a></li>
+              <li id='prev-step' title='上一节' class='{{stepIndex > 0 ? '': "disabled"}}'><a href="javascript:;">&lt;</a></li>
               <li>{{stepIndex}} / {{chapter.steps.length}}</li>
               <li class='next-step {{hasNextStep||"disabled"}}' title='下一节'><a href="javascript:;">&gt;</a></li>
             </ul>
-            <button class="btn btn-default" id="reset">重置代码</button>
+            <button class="btn btn-primary" id="reset">重置代码</button>
           </div>
           <div id="notes">{{{step.note}}}</div>
-          <div class="btn-group btn-group-justified"><a href="javascript:;" class="btn btn-default fixcode {{hasFixCode && 'disabled'}}" title="懒人专用">补全本节代码</a><a href="javascript:;" class="btn btn-default next-step {{hasNextStep||'disabled'}}">下一节</a></div>
+          <div class="btn-group btn-group-justified"><a href="javascript:;" class="btn btn-success fixcode {{step.fixCode ? '' : 'disabled'}}" title="懒人专用">补全本节代码</a><a href="javascript:;" class="btn btn-primary next-step {{hasNextStep||'disabled'}}">下一节</a></div>
         </div>
         <div class='write-pad' a-if={{writeMode}}>
           <input type="text" placeholder="在此输入章节标题" class=form-control a-model={{chapter.title}}>

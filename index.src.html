@@ -50,7 +50,7 @@
     </div>
     <div class="row">
       <div class="col-lg-6">
-        <div class='panel board'>
+        <div class='panel panel-default board'>
           <div class=panel-heading>
             <ul class="pager">
               <li id='prev-step' title='上一节' class='{{stepIndex > 0 ? '': "disabled"}}'><a href="javascript:;">&lt;</a></li>
@@ -59,7 +59,7 @@
             </ul>
             <button class="btn btn-primary" id="reset">重置代码</button>
           </div>
-          <div id="notes">{{{step.note}}}</div>
+          <div class='panel-body' id="notes">{{{step.note}}}</div>
           <div class="btn-group btn-group-justified"><a href="javascript:;" class="btn btn-success fixcode {{step.fixCode ? '' : 'disabled'}}" title="懒人专用">补全本节代码</a><a href="javascript:;" class="btn btn-primary next-step {{hasNextStep||'disabled'}}">下一节</a></div>
         </div>
         <div class='write-pad' a-if={{writeMode}}>
@@ -69,20 +69,20 @@
           <textarea a-if={{!markdowneditor}} placeholder="在此输入教程内容, 支持 HTML." a-model={{step.note}} class='form-control htmleditor'></textarea>
           <textarea class=form-control placeholder='自此输入每节自动运行的代码' a-model={{step.init}}></textarea>
         </div>
-        <div class='panel output'>
+        <div class='panel panel-default output'>
           <div class="panel-heading">内容预览:<div class="checkbox isfixed" a-if={{writeMode}}><label>是否自动运行<input type="checkbox" a-model={{step.autorun}}></label></div></div>
-          <div id="output"></div>
+          <div class=panel-body id="output"></div>
         </div>
       </div>
       <div class="col-lg-6 codes">
-        <div class='html panel'>
+        <div class='html panel panel-default'>
           <div class=panel-heading>
             <div class="checkbox isfixed" a-if={{writeMode}}><label>是否补全代码<input type="checkbox" a-model={{isFixHTML}}></label></div>
             <h4>HTML</h4>
           </div>
           <div class='code'><textarea id="template" a-model="{{step.html}}"></textarea></div>
         </div>
-        <div class='javascript panel'>
+        <div class='javascript panel panel-default'>
           <div class=panel-heading>
             <button class="exe btn btn-default" title="Ctrl + Enter 快速执行">执行代码</button>
             <div class="checkbox isfixed" a-if={{writeMode}}><label>是否补全代码<input type="checkbox" a-model={{isFixJavascript}}></label></div>
@@ -90,7 +90,7 @@
           </div>
           <div class='code'><textarea id="javascript" a-model={{step.javascript}}></textarea></div>
         </div>
-        <div class='console panel'>
+        <div class='console panel panel-default'>
           <div class=panel-heading>
             <button class="exe btn btn-default" title="Ctrl + Enter 快速执行">执行控制台</button>
             <div class="checkbox isfixed" a-if={{writeMode}}><label>是否补全代码<input type="checkbox" a-model={{isFixConsole}}></label></div>

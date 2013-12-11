@@ -1,4 +1,3 @@
-
 $(function() {
     var htmlCm, jsCm, consoleCm
       , router = Ant.router
@@ -92,6 +91,31 @@ $(function() {
     , navigate: function(hash) {
         router.navigate(hash + (this.data.writeMode ? '?write=true' : ''));
       }
+
+      //保存数据到 localStorage
+    , save: function(){
+        var step = {
+              note: $('#notes').html()
+            , fixCode: {}
+            }
+          , html = htmlCm.getValue()
+          , js = jsCm.getValue()
+          , console = consoleCm.getValue()
+          , dataStr
+          ;
+        
+        (this.get('isFixHTML') ? step.fixCode : step).html = html || undefined;
+        (this.get('isFixJavascript') ? step.fixCode : step).javascript = js || undefined;
+        (this.get('isFixConsole') ? step.fixCode : step).console = console || undefined;
+        
+        if(!this.data.isFixHTML && !this.data.isFixJavascript && !this.data.isFixConsole){
+          delete step.fixCode;
+        }
+        this.data.tutorials[this.data.chapterIndex - 1].steps.splice(this.data.stepIndex - 1, 1, step);
+        dataStr = JSON.stringify(this.data.tutorials)
+        localStorage.setItem('tutorials', dataStr);
+        return dataStr;
+      }
     });
     
     !window.notSupport && $.ajax('data.json', {dataType: 'json'}).done(function(data){
@@ -154,28 +178,8 @@ $(function() {
           }
           
           //编辑模式 only
-        , 'click #save': function() {
-            var step = {
-                  note: $('#notes').html()
-                , fixCode: {}
-                }
-              , html = htmlCm.getValue()
-              , js = jsCm.getValue()
-              , console = consoleCm.getValue()
-              ;
-            
-            (this.get('isFixHTML') ? step.fixCode : step).html = html || undefined;
-            (this.get('isFixJavascript') ? step.fixCode : step).javascript = js || undefined;
-            (this.get('isFixConsole') ? step.fixCode : step).console = console || undefined;
-            
-            if(!this.data.isFixHTML && !this.data.isFixJavascript && !this.data.isFixConsole){
-              delete step.fixCode;
-            }
-            this.data.tutorials[this.data.chapterIndex - 1].steps.splice(this.data.stepIndex - 1, 1, step);
-            localStorage.setItem('tutorials', JSON.stringify(this.data.tutorials))
-          }
-        , 'click #show': function() {
-            $('#output').text((JSON.stringify(this.data.tutorials)));
+        , 'click #save': function(e) {
+            e.currentTarget.href = 'data:text/css,' + encodeURIComponent(this.save());
           }
         , 'update': function(e, info) {
             if(info && info.step && ('noteMarked' in info.step)) {
@@ -190,7 +194,13 @@ $(function() {
       
       router.start({
         '*': function(info) {
-          tutor.set('writeMode', info.searchObj && info.searchObj.write === 'true');
+          var write = info.query.write === 'true'
+          tutor.set('writeMode', write);
+          if(write){
+            this.autoSaveTimer = setInterval(function() { tutor.save() }, 30000);
+          }else{
+            clearInterval(this.autoSaveTimer);
+          }
         }
       , ':chapter/:step?': function(info) {
           var params = info.params

@@ -5,7 +5,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
   <title>Tutorials.js 使用教程</title>
   
-  <link rel="stylesheet" href="dist/app.css"/>
+  <!-- build:css dist/app.css -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+  <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="bower_components/codemirror/theme/base16-dark.css">
+  <link rel="stylesheet" href="bower_components/intro.js/introjs.css">
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/dark.css">
+
+  <link rel="stylesheet" href="css/tutorials.css">
+  <!-- endbuild -->
   
   <!--[if lt IE 8]>
     <style>
@@ -96,6 +105,20 @@
     本教程不支持 IE8 以下的浏览器! 请更换一个现代浏览器观看本教程.
   </h3>
 
-  <script src="dist/app.js"></script>
+  <!-- build:js dist/app.js -->
+  <script src="bower_components/jquery/jquery.js"></script>
+
+  <script src="bower_components/codemirror/lib/codemirror.js"></script>
+  <script src="bower_components/codemirror/mode/xml/xml.js"></script>
+  <script src="bower_components/codemirror/mode/javascript/javascript.js"></script> 
+  <script src="bower_components/codemirror-emmet/emmet.js"></script>
+
+  <script src="bower_components/marked/lib/marked.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.js"></script>
+  <script src="bower_components/intro.js/intro.js"></script>
+  <script src="bower_components/ant.js/dist/ant.all.js"></script>
+
+  <script type="text/javascript" src="js/tutorials.js"></script>
+  <!-- endbuild -->
 </body>
 </html>

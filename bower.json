@@ -1,0 +1,34 @@
+{
+  "name": "tutorials.js",
+  "version": "0.2.0",
+  "homepage": "http://antjs.github.io/tutorials.js",
+  "authors": [
+    "Justan <ckr189@gmail.com>"
+  ],
+  "description": "制作 javascript 在线互动教程工具",
+  "main": "js\\tutorials.js",
+  "keywords": [
+    "tutorials"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "intro.js": "~0.6.0",
+    "ant.js": "0.2.0-beta",
+    "codemirror": "~3.20.0",
+    "codemirror-emmet": "*",
+    "jquery": "~1.10.2",
+    "marked": "~0.2.10",
+    "requirejs": "~2.1.9",
+    "highlightjs": "~7.5.0",
+    "bootstrap": "~3.0.3",
+    "respond": "~1.4.1"
+  },
+  "devDependencies": {}
+}

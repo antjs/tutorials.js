@@ -39,13 +39,14 @@
     <div class=header>
       <h1>Tutorials.js 使用教程</h1>
       <ul class="pager">
-        <li id='prev-chapter' title='上一章' class='{{chapterIndex > 0 ? '': "disabled"}}'><a href="javascript:;">&lt;</a></li>
+        <li id='prev-chapter' title='上一章'><a href="javascript:;" class='btn {{chapterIndex > 1 ? "": "disabled"}}'>&lt;</a></li>
         <li>{{chapterIndex}} / {{tutorials.length}}</li>
-        <li id='next-chapter' title='下一章' class='{{hasNextChapter||"disabled"}}'><a href="javascript:;">&gt;</a></li>
+        <li id='next-chapter' title='下一章'><a href="javascript:;" class='btn {{hasNextChapter?"":"disabled"}}'>&gt;</a></li>
       </ul>
-      <h2 a-model={{chapter.title}} contenteditable?={{writeMode}}></h2>
-      <div class="write-mode-box" a-if={{writeMode}}>
-        <a href='javascript:;' download='data.json' class="btn btn-primary" id="save">保存</a>
+      <h2 a-model=chapter.title contenteditable?={{writeMode}}></h2>
+      <div class="write-mode-box" a-if=writeMode>
+        <button class="btn btn-primary" id="save">保存</button>
+        <a href='javascript:;' download='data.json' class="btn btn-primary" id="download">下载</a>
       </div>
     </div>
     <div class="row">
@@ -53,50 +54,47 @@
         <div class='panel panel-default board'>
           <div class=panel-heading>
             <ul class="pager">
-              <li id='prev-step' title='上一节' class='{{stepIndex > 0 ? '': "disabled"}}'><a href="javascript:;">&lt;</a></li>
+              <li id='prev-step' title='上一节'><a class='btn {{stepIndex > 1 ? "": "disabled"}}' href="javascript:;" class='btn'>&lt;</a></li>
               <li>{{stepIndex}} / {{chapter.steps.length}}</li>
-              <li class='next-step {{hasNextStep||"disabled"}}' title='下一节'><a href="javascript:;">&gt;</a></li>
+              <li class='next-step' title='下一节'><a  class='btn {{hasNextStep?"":"disabled"}}' href="javascript:;">&gt;</a></li>
             </ul>
             <button class="btn btn-primary" id="reset">重置代码</button>
           </div>
-          <div class='panel-body' id="notes">{{{step.note}}}</div>
-          <div class="btn-group btn-group-justified"><a href="javascript:;" class="btn btn-success fixcode {{step.fixCode ? '' : 'disabled'}}" title="懒人专用">补全本节代码</a><a href="javascript:;" class="btn btn-primary next-step {{hasNextStep||'disabled'}}">下一节</a></div>
+          <div class='panel-body' id="notes">{{{step.note | marked}}}</div>
+          <div class="btn-group btn-group-justified"><a href="javascript:;" class="btn btn-success fixcode {{step.fixCode ? '' : 'disabled'}}" title="懒人专用">补全本节代码</a><a href="javascript:;" class="btn btn-primary next-step {{hasNextStep?'':'disabled'}}">下一节</a></div>
         </div>
-        <div class='write-pad' a-if={{writeMode}}>
-          <input type="text" placeholder="在此输入章节标题" class=form-control a-model={{chapter.title}}>
-          <div class="checkbox isfixed"><label>markdown 编辑器<input type="checkbox" a-model={{markdowneditor}}></label></div>
-          <textarea a-if={{markdowneditor}} placeholder="在此输入 markdown 教程内容." a-model={{step.noteMarked}} class='form-control markdowneditor'></textarea>
-          <textarea a-if={{!markdowneditor}} placeholder="在此输入教程内容, 支持 HTML." a-model={{step.note}} class='form-control htmleditor'></textarea>
-          <textarea class=form-control placeholder='自此输入每节自动运行的代码' a-model={{step.init}}></textarea>
+        <div class='write-pad' a-if=writeMode>
+          <textarea placeholder="在此输入 markdown 教程内容." a-model=step.note class='form-control markdowneditor'></textarea>
+          <textarea class=form-control placeholder='自此输入每节自动运行的代码' a-model=step.init></textarea>
         </div>
         <div class='panel panel-default output'>
-          <div class="panel-heading">内容预览:<div class="checkbox isfixed" a-if={{writeMode}}><label>是否自动运行<input type="checkbox" a-model={{step.autorun}}></label></div></div>
+          <div class="panel-heading">内容预览:<div class="checkbox isfixed" a-if=writeMode><label>是否自动运行<input type="checkbox" a-model=step.autorun></label></div></div>
           <div class=panel-body id="output"></div>
         </div>
       </div>
       <div class="col-lg-6 codes">
         <div class='html panel panel-default'>
           <div class=panel-heading>
-            <div class="checkbox isfixed" a-if={{writeMode}}><label>是否补全代码<input type="checkbox" a-model={{isFixHTML}}></label></div>
+            <div class="checkbox isfixed" a-if=writeMode><label>是否补全代码<input type="checkbox" a-model=isFixHTML></label></div>
             <h4>HTML</h4>
           </div>
-          <div class='code'><textarea id="template" a-model="{{step.html}}"></textarea></div>
+          <div class='code'><textarea id="template" a-model="step.html"></textarea></div>
         </div>
         <div class='javascript panel panel-default'>
           <div class=panel-heading>
             <button class="exe btn btn-default" title="Ctrl + Enter 快速执行">执行代码</button>
-            <div class="checkbox isfixed" a-if={{writeMode}}><label>是否补全代码<input type="checkbox" a-model={{isFixJavascript}}></label></div>
+            <div class="checkbox isfixed" a-if=writeMode><label>是否补全代码<input type="checkbox" a-model=isFixJavascript></label></div>
             <h4>Javascript</h4>
           </div>
-          <div class='code'><textarea id="javascript" a-model={{step.javascript}}></textarea></div>
+          <div class='code'><textarea id="javascript" a-model=step.javascript></textarea></div>
         </div>
         <div class='console panel panel-default'>
           <div class=panel-heading>
             <button class="exe btn btn-default" title="Ctrl + Enter 快速执行">执行控制台</button>
-            <div class="checkbox isfixed" a-if={{writeMode}}><label>是否补全代码<input type="checkbox" a-model={{isFixConsole}}></label></div>
+            <div class="checkbox isfixed" a-if=writeMode><label>是否补全代码<input type="checkbox" a-model=isFixConsole></label></div>
             <h4>JS 控制台</h4>
           </div>
-          <div class='code'><textarea id="console" a-model={{step.console}}></textarea></div>
+          <div class='code'><textarea id="console" a-model=step.console></textarea></div>
         </div>
       </div>
     </div>

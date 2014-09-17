@@ -6,7 +6,7 @@
     "Justan <ckr189@gmail.com>"
   ],
   "description": "制作 javascript 在线互动教程工具",
-  "main": "js\\tutorials.js",
+  "main": "index.html",
   "keywords": [
     "tutorials"
   ],
@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "intro.js": "~0.6.0",
-    "ant.js": "0.2.0-beta",
+    "ant.js": "0.3",
     "codemirror": "~3.20.0",
     "codemirror-emmet": "*",
     "jquery": "~1.10.2",

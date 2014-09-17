@@ -92,7 +92,8 @@ $(function() {
       //保存数据到 localStorage
     , save: function(){
         var step = {
-              note: $('#notes').html()
+              note: this.data.step.note
+            , init: this.data.step.init
             , fixCode: {}
             }
           , html = htmlCm.getValue()
@@ -115,7 +116,10 @@ $(function() {
       }
     });
     
-    !window.notSupport && $.ajax('data.json', {dataType: 'json'}).done(function(data){
+    var query = router.urlParse(location.query, true).query
+      ;
+    
+    !window.notSupport && $.ajax(query.data || 'data.json', {dataType: 'json'}).done(function(data){
       $('#loading').fadeOut();
       
       var tutorials = JSON.parse(localStorage.getItem('tutorials') || JSON.stringify(data) || '[{"steps":[{}]}]');
@@ -132,8 +136,13 @@ $(function() {
             }
           };
       
-      tutor = new TuTor($('.container')[0], {
+      window.tutor = tutor = new TuTor($('.container')[0], {
         data: {tutorials:tutorials, writeMode: false}
+      , filters: {
+          marked: function(note) {
+            return marked(note);
+          }
+        }
       , events: {
           'keypress textarea': executeHandler
         , 'click button': executeHandler
@@ -176,18 +185,15 @@ $(function() {
           
           //编辑模式 only
         , 'click #save': function(e) {
-            e.currentTarget.href = 'data:text/css,' + encodeURIComponent(this.save());
+            this.save();
           }
-        , 'update': function(e, info) {
-            if(info && info.step && ('noteMarked' in info.step)) {
-              var that = this;
-              marked(info.step.noteMarked, {}, function(err, html){
-                err || that.set('step.note', html);
-              });
-            }
+        , 'click #download': function(e) {
+            e.currentTarget.href = 'data:text/json,' + encodeURIComponent(this.save());
           }
         }
       });
+      
+      tutor.init();
       
       router.start({
         '*': function(info) {

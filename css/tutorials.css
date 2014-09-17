@@ -45,11 +45,11 @@
 }
 
 .board{
-  height: 400px;
   overflow: auto;
 }
 #notes{
-  margin-bottom: 1em;
+  height: 320px;
+  overflow: auto;
 }
 .output{
   height: 240px;

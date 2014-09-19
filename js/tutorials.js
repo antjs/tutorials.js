@@ -18,6 +18,7 @@ $(function() {
         eval(consoleCm.getValue());
       }
     , init: function() {
+        $('#loading').fadeOut();
         $(this.el).fadeIn();
         htmlCm = CodeMirror.fromTextArea(document.getElementById('template'), {
           lineNumbers: true
@@ -62,7 +63,7 @@ $(function() {
         setTimeout(function(){ step.init && eval(step.init); }, 0);
       }
     , setChapter: function(index, stepIndex) {
-        var chapter, tutorials = this.data.tutorials;
+        var chapter, tutorials = this.data.tutorial.list;
         index = index * 1;
         if(isNaN(index)){
           return;
@@ -76,7 +77,7 @@ $(function() {
         this.set('chapter', chapter);
         this.set({
           chapterIndex: index + 1
-        , hasNextChapter: index < this.data.tutorials.length - 1 || this.data.writeMode
+        , hasNextChapter: index < this.data.tutorial.list.length - 1 || this.data.writeMode
         });
 
         if(stepIndex * 1){
@@ -94,6 +95,7 @@ $(function() {
         var step = {
               note: this.data.step.note
             , init: this.data.step.init
+            , autorun: this.data.step.autorun
             , fixCode: {}
             }
           , html = htmlCm.getValue()
@@ -109,35 +111,47 @@ $(function() {
         if(!this.data.isFixHTML && !this.data.isFixJavascript && !this.data.isFixConsole){
           delete step.fixCode;
         }
-        this.data.tutorials[this.data.chapterIndex - 1].steps.splice(this.data.stepIndex - 1, 1, step);
-        dataStr = JSON.stringify(this.data.tutorials)
-        localStorage.setItem('tutorials', dataStr);
+        this.data.tutorial.list[this.data.chapterIndex - 1].steps.splice(this.data.stepIndex - 1, 1, step);
+        dataStr = JSON.stringify(this.data.tutorial)
+        localStorage.setItem('tutorial', dataStr);
         return dataStr;
       }
     });
     
     var query = router.urlParse(location.query, true).query
+      , filePath = query.data || 'data.json'
+      , fileName
       ;
     
-    !window.notSupport && $.ajax(query.data || 'data.json', {dataType: 'json'}).done(function(data){
-      $('#loading').fadeOut();
-      
-      var tutorials = JSON.parse(localStorage.getItem('tutorials') || JSON.stringify(data) || '[{"steps":[{}]}]');
+    fileName = filePath.split('/');
+    fileName = fileName[fileName.length - 1].replace(/\?.+$/, '');
     
+    if(!window.notSupport){
+      var plain = '{"list": [{"steps": []}], "title": "教程示例"}';
+    
+      $.ajax(filePath, {dataType: 'json'}).always(function(data, stat) {
+        if(stat !== 'success') {
+          data = void(0);
+        }
+        init(JSON.parse(localStorage.getItem('tutorial') || JSON.stringify(data) || plain));
+      });
+    }
+    
+    function init(tutorial){
       var executeHandler = function(e) {
-            that = this;
-            if(e.ctrlKey && e.keyCode === 13 || e.type == 'click'){
-              var $target = $(e.target);
-              if($target.parents('.javascript').length){
-                that.run();
-              }else if($target.parents('.console').length){
-                that.runConsole();
-              }
-            }
-          };
+        that = this;
+        if(e.ctrlKey && e.keyCode === 13 || e.type == 'click'){
+          var $target = $(e.target);
+          if($target.parents('.javascript').length){
+            that.run();
+          }else if($target.parents('.console').length){
+            that.runConsole();
+          }
+        }
+      };
       
       window.tutor = tutor = new TuTor($('.container')[0], {
-        data: {tutorials:tutorials, writeMode: false}
+        data: {tutorial:tutorial, writeMode: false, fileName: fileName}
       , filters: {
           marked: function(note) {
             return marked(note);
@@ -167,7 +181,7 @@ $(function() {
             }
           }
         , 'click #next-chapter': function() {
-            if(this.data.chapterIndex < this.get('tutorials').length || this.data.writeMode){
+            if(this.data.chapterIndex < this.get('tutorial.list').length || this.data.writeMode){
               //this.setChapter(this.data.chapterIndex);
               this.navigate(this.data.chapterIndex + 1);
             }
@@ -193,16 +207,15 @@ $(function() {
         }
       });
       
-      tutor.init();
       
       router.start({
         '*': function(info) {
           var write = info.query.write === 'true'
           tutor.set('writeMode', write);
+          clearInterval(this.autoSaveTimer);
+          
           if(write){
             this.autoSaveTimer = setInterval(function() { tutor.save() }, 30000);
-          }else{
-            clearInterval(this.autoSaveTimer);
           }
         }
       , ':chapter/:step?': function(info) {
@@ -213,7 +226,9 @@ $(function() {
           tutor.setChapter(chapter, step);
         }
       });
-    });
+      
+      tutor.init();
+    };
     
     marked.setOptions({
       highlight: function (code, lang) {

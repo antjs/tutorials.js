@@ -21,13 +21,13 @@
   "dependencies": {
     "intro.js": "~0.6.0",
     "ant.js": "0.3",
-    "codemirror": "~3.20.0",
+    "codemirror": "~4.5.0",
     "codemirror-emmet": "*",
     "jquery": "~1.10.2",
     "marked": "~0.2.10",
     "requirejs": "~2.1.9",
     "highlightjs": "~7.5.0",
-    "bootstrap": "~3.0.3",
+    "bootstrap": "~3.2",
     "respond": "~1.4.1"
   },
   "devDependencies": {}

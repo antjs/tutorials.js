@@ -113,7 +113,7 @@ $(function() {
         }
         this.data.tutorial.list[this.data.chapterIndex - 1].steps.splice(this.data.stepIndex - 1, 1, step);
         dataStr = JSON.stringify(this.data.tutorial)
-        localStorage.setItem('tutorial', dataStr);
+        localStorage.setItem('tutorial-' + filePath, dataStr);
         return dataStr;
       }
     });
@@ -133,7 +133,7 @@ $(function() {
         if(stat !== 'success') {
           data = void(0);
         }
-        init(JSON.parse(localStorage.getItem('tutorial') || JSON.stringify(data) || plain));
+        init(JSON.parse(localStorage.getItem('tutorial-' + filePath) || JSON.stringify(data) || plain));
       });
     }
     
@@ -151,7 +151,11 @@ $(function() {
       };
       
       window.tutor = tutor = new TuTor($('.container')[0], {
-        data: {tutorial:tutorial, writeMode: false, fileName: fileName}
+        data: {
+          tutorial:tutorial
+        , fileName: fileName
+        , canDownload: 'download' in document.createElement('a')
+        }
       , filters: {
           marked: function(note) {
             return marked(note);
@@ -204,9 +208,25 @@ $(function() {
         , 'click #download': function(e) {
             e.currentTarget.href = 'data:text/json,' + encodeURIComponent(this.save());
           }
+        , 'click .write-pad .nav-tabs li:not(.active)': function(e) {
+            var $li = $(e.currentTarget)
+              , index = $li.index()
+              ;
+              
+            $li.siblings('.active').removeClass('active');
+            $li.addClass('active');
+            
+            $('.write-pad .tab-content .tab-pane').removeClass('active').eq(index).addClass('active');
+          }
+        }
+      , watchers : {
+          'tutorial.title': function(val) {
+            document.title = val;
+          }
         }
       });
       
+      tutor.init();
       
       router.start({
         '*': function(info) {
@@ -223,11 +243,10 @@ $(function() {
             , chapter = params.chapter - 1
             , step = (params.step ? params.step : 1) - 1
             ;
+            
           tutor.setChapter(chapter, step);
         }
       });
-      
-      tutor.init();
     };
     
     marked.setOptions({

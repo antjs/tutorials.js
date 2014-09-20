@@ -12,6 +12,7 @@
 
 .header h1, .header h2, .header .pager{
   float: left;
+  margin-left: 0.8em;
 }
 
 .panel .pager{
@@ -58,6 +59,7 @@
 
 .write-mode-box{
   float: right;
+  margin-top: 1em;
 }
 
 .write-mode #output{
@@ -72,6 +74,9 @@
   display:none;
 }
 
+.write-pad textarea{
+  min-height: 250px;
+}
 .markdowneditor{
   color: #E0E0E0;
   background-color: #151515;

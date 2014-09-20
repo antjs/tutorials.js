@@ -38,6 +38,7 @@
   <div class="container {{writeMode ? 'write-mode' : ''}}">
     <div class=header>
       <h1 a-model=tutorial.title contenteditable?={{writeMode}} style='min-width: 10px;'> </h1>
+      
       <ul class="pager">
         <li id='prev-chapter' title='上一章'><a href="javascript:;" class='btn {{chapterIndex > 1 ? "": "disabled"}}'>&lt;</a></li>
         <li>{{chapterIndex}} / {{tutorial.list.length}}</li>
@@ -46,7 +47,7 @@
       <h2 a-model=chapter.title contenteditable?={{writeMode}}></h2>
       <div class="write-mode-box" a-if=writeMode>
         <button class="btn btn-primary" id="save">保存</button>
-        <a href='javascript:;' download='{{fileName}}' class="btn btn-primary" id="download">下载</a>
+        <a a-if=canDownload href='javascript:;' download='{{fileName}}' class="btn btn-primary" id="download">下载</a>
       </div>
     </div>
     <div class="row">
@@ -63,19 +64,31 @@
           <div class='panel-body' id="notes">{{{step.note | marked}}}</div>
           <div class="btn-group btn-group-justified"><a href="javascript:;" class="btn btn-success fixcode {{step.fixCode ? '' : 'disabled'}}" title="懒人专用">补全本节代码</a><a href="javascript:;" class="btn btn-primary next-step {{hasNextStep?'':'disabled'}}">下一节</a></div>
         </div>
-        <div class='write-pad' a-if=writeMode>
-          <textarea placeholder="在此输入 markdown 教程内容." a-model=step.note class='form-control markdowneditor'></textarea>
-          <textarea class=form-control placeholder='自此输入每节自动运行的代码' a-model=step.init></textarea>
-        </div>
         <div class='panel panel-default output'>
-          <div class="panel-heading">内容预览:<div class="checkbox isfixed" a-if=writeMode><label>是否自动运行<input type="checkbox" a-model=step.autorun></label></div></div>
+          <div class="panel-heading">内容预览:<div class="checkbox isfixed" a-if=writeMode><label><input type="checkbox" a-model=step.autorun>是否自动运行</label></div></div>
           <div class=panel-body id="output"></div>
         </div>
       </div>
       <div class="col-lg-6 codes">
+        <div class='write-pad panel' a-if=writeMode>
+          <ul class="nav nav-tabs">
+            <li class='active'>
+              <a href="javascript:;">内容</a>
+            </li>
+            <li>
+              <a href="javascript:;">代码</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active">
+              <textarea placeholder="在此输入 markdown 教程内容." a-model=step.note class='form-control markdowneditor'></textarea></div>
+            <div class="tab-pane">
+              <textarea class=form-control title="这里输入的代码每节会自动运行" placeholder='自此输入每节自动运行的代码' a-model=step.init></textarea></div>
+          </div>
+        </div>
         <div class='html panel panel-default'>
           <div class=panel-heading>
-            <div class="checkbox isfixed" a-if=writeMode><label>是否补全代码<input type="checkbox" a-model=isFixHTML></label></div>
+            <div class="checkbox isfixed" a-if=writeMode><label><input type="checkbox" a-model=isFixHTML>是否补全代码</label></div>
             <h4>HTML</h4>
           </div>
           <div class='code'><textarea id="template" a-model="step.html"></textarea></div>
@@ -83,7 +96,7 @@
         <div class='javascript panel panel-default'>
           <div class=panel-heading>
             <button class="exe btn btn-default" title="Ctrl + Enter 快速执行">执行代码</button>
-            <div class="checkbox isfixed" a-if=writeMode><label>是否补全代码<input type="checkbox" a-model=isFixJavascript></label></div>
+            <div class="checkbox isfixed" a-if=writeMode><label><input type="checkbox" a-model=isFixJavascript>是否补全代码</label></div>
             <h4>Javascript</h4>
           </div>
           <div class='code'><textarea id="javascript" a-model=step.javascript></textarea></div>
@@ -91,7 +104,7 @@
         <div class='console panel panel-default'>
           <div class=panel-heading>
             <button class="exe btn btn-default" title="Ctrl + Enter 快速执行">执行控制台</button>
-            <div class="checkbox isfixed" a-if=writeMode><label>是否补全代码<input type="checkbox" a-model=isFixConsole></label></div>
+            <div class="checkbox isfixed" a-if=writeMode><label><input type="checkbox" a-model=isFixConsole>是否补全代码</label></div>
             <h4>JS 控制台</h4>
           </div>
           <div class='code'><textarea id="console" a-model=step.console></textarea></div>
